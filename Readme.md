@@ -6,6 +6,7 @@ CSCE 4600.003
 Spring 2016
 Project #1
 Due: March 23, 2016 at 11:59pm via Blackboard Learn
+------------------------------------------------------------------------------
 For this project you will be working in groups of two or three. Each member of your group must sign up on the
 corresponding project sheet in order to receive a grade. Your task is to develop a simulation of different
 scheduling disciplines that allocate a set of processes to available processors.
