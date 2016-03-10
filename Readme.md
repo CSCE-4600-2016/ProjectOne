@@ -14,16 +14,16 @@ Using the process generator that you developed in Homework #2, generate a set of
 runtime requirements (i.e., cycles). You may assume that the processes arrive in the system every 50 cycles (e.g.,
 at times 0, 50,100, 150, 200, …etc.)
 
-[ ]1. Develop a simulation of Round-Robin Scheduling with a quantum of 50 cycles, and schedule your set of
+[ ] 1. Develop a simulation of Round-Robin Scheduling with a quantum of 50 cycles, and schedule your set of
 processes. Assuming a context switch penalty of 10 cycles (for the scheduler to switch between
 processes), compute the average waiting time and the total penalty for the set of processes. Repeat the
 experiment over different sets of processes. You should document (graphically) the distribution of cycle
 times for your set of processes.
 
-[ ]2. Repeat the experiment above for 2 additional scheduling disciplines chosen from (SRT, SJF, FIFO,
+[ ] 2. Repeat the experiment above for 2 additional scheduling disciplines chosen from (SRT, SJF, FIFO,
 LRT).
 
-[ ]3. Assuming that you have a multi-processor system with 4 processors. Repeat the above experiments and
+[ ] 3. Assuming that you have a multi-processor system with 4 processors. Repeat the above experiments and
 calculate the average waiting time and total context-switch penalty.
 NOTE: To analyze the performance of your scheduling strategies, you must conduct multiple experiments over
 different sets of processes (with different process characteristics).
