@@ -2,38 +2,34 @@
 // Description: A base class sechduler that all the algoorithms
 // can derive from as subclasses
 
-#ifndef SCHEDULER_H
-#define SCHEDULER_H
-
+// #include "ProcessTable.h"
+// #include "ProcessAlgorithms.h"
+#include <string>
 #include <vector>
 
+#ifndef SCHEDULER_H
+#define SCHEDULER_H
 class Scheduler
 {
 	private:
-		// These vectors will represent our process queues
-		std::vector<int> ReadyQueue;
-		std::vector<int> WaitQueue;		
-		bool isIdle;
 
 	public:
-		/* Constructor -- 
-		   Desc: Begins the Scheduling simulation 
-		   Params: vector input queue, stats, and clock start time  */
-		Scheduler(std::vector<int> inputQueue, int[]stats, int clockStartTime );
-		
-		/* ProcessReady -- 
-		   Desc: Check if a process is ready
-		   Params: int ticket,  
-		*/
-		Process ProcessReady(int ticket);
-		
-		/* ResetQueue -- 
-		   Desc: Flush all queues */
-		void ResetQueue();
 
-	/*--End Scheduler Class--*/   
+		/* Takes the algo name, and required params*/
+		Scheduler(const std::string &AlgorithmName, int csp,
+					int quantum = 0, int m = 0);
+		~Scheduler();	
 
+		/* LoadFile method, if we are taking in processes from a file */
+		void LoadFile(const std::string &FileName);
+
+		/* RunProcesses */
+		void RunProcesses();
+
+		/* Getter for the ProcessTable */
+		/* ProcessTable *GetProcessTable(){ return }*/
 };
+
 
 
 #endif // SCHEDULER_H
