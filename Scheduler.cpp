@@ -2,13 +2,27 @@
 	File: Scheduler.cpp
 	Desc: Implmenting Scheduler class functions
 */
+
 #include "Scheduler.h"
+#include <fstream>
+#include <iostream>
+#include <cstring>	
 
-/* Takes the algo name, and required params */
+/* Our PCB-type vector iterator for the Ready Process Queue */
+typedef std::std::vector<PCB>::iterator ReadyProcItr;	
 
-Scheduler::Scheduler(const std::string &AlgorithmName, int csp, int quantum = 0, int m = 0)
+/* Constructor; takes the algo name, and required params */
+
+Scheduler::Scheduler(const std::string &AlgorithmName, int contextSwitchPenalty, int quantum = 0, int degree):algoParams(degree)
 {
-
+	algoParams
+	algoParams
+	algoParams
+	algoParams
+	algoParams
+	algoParams
+	algoParams
+	algorithm = CreateAlgorithm(AlgorithmName);
 }
 Scheduler::~Scheduler()
 {

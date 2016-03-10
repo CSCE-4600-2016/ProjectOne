@@ -2,7 +2,7 @@
 // Description: A base class sechduler that all the algorithms can derive from as subclasses
 // Adding more headers for the two that are commented out right now 
 
-// #include "ProcessTable.h"
+#include "ProcessTable.h"
 // #include "ProcessAlgorithms.h"
 #include <string>
 #include <vector>
@@ -25,7 +25,7 @@ class Scheduler
 	public:
 
 		/* Takes the algo name, and required params*/
-		Scheduler(const std::string &AlgorithmName, int csp, int quantum = 0, int m = 0);
+		Scheduler(const std::string &AlgorithmName, int contextSwitchPenalty, int quantum = 0, int m = 0);
 		~Scheduler();	
 
 		/* LoadFile method, if we are taking in processes from a file */
@@ -35,7 +35,7 @@ class Scheduler
 		void RunProcesses();
 
 		/* Getter for the ProcessTable */
-		/* ProcessTable *GetProcessTable(){ return &processTable } */
+		ProcessTable *GetProcessTable(){ return &processTable; } 
 
 		/* Getter for the algorithm paramters */
 		/* SchedAlgoParams *GetSchedAlgoParams(){ return &algoParams }*/

@@ -41,5 +41,6 @@ enum ProcessState{ READY, RUNNING, NOT_LOADED, DONE };
 
  };
 
- struct ProcessTable{ std::vector<PCB>Processes;};
+// A usable struct containing a vector of PCB process objects
+ struct ProcessTable { std::vector<PCB>Processes; };
  
