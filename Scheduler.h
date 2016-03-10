@@ -21,18 +21,19 @@ class Scheduler
 		   Params: vector input queue, stats, and clock start time  */
 		Scheduler(std::vector<int> inputQueue, int[]stats, int clockStartTime );
 		
-		// Ready functions
+		/* ProcessReady -- 
+		   Desc: Check if a process is ready
+		   Params: int ticket,  
+		*/
+		Process ProcessReady(int ticket);
 		
+		/* ResetQueue -- 
+		   Desc: Flush all queues */
+		void ResetQueue();
+
+	/*--End Scheduler Class--*/   
+
 };
-
-
-
-
-
-
-
-
-
 
 
 #endif // SCHEDULER_H
