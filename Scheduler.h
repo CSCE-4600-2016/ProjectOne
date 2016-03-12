@@ -3,7 +3,7 @@
 // Adding more headers for the two that are commented out right now 
 
 #include "ProcessTable.h"
-// #include "ProcessAlgorithms.h"
+#include "Algorithms.h"
 #include <string>
 #include <vector>
 
@@ -18,6 +18,7 @@ class Scheduler
 		SchedulingAlgorithm *algorithm;
 		SchedAlgoParams algoParams;
 		std::std::vector<PCB> readyProcesses;
+		
 		//Functions
 		SchedulingAlgorithm *CreateAlgorithm(const std::string &AlgorithmName);
 		
@@ -38,7 +39,7 @@ class Scheduler
 		ProcessTable *GetProcessTable(){ return &processTable; } 
 
 		/* Getter for the algorithm paramters */
-		/* SchedAlgoParams *GetSchedAlgoParams(){ return &algoParams }*/
+		SchedAlgoParams *GetSchedAlgoParams(){ return &algoParams }
 
 };
 

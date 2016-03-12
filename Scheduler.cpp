@@ -15,7 +15,7 @@ typedef std::std::vector<PCB>::iterator ReadyProcItr;
 
 Scheduler::Scheduler(const std::string &AlgorithmName, int contextSwitchPenalty, int quantum = 0, int degree):algoParams(degree)
 {
-	algoParams
+	algoParams.
 	algoParams
 	algoParams
 	algoParams
