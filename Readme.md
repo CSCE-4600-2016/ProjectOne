@@ -1,6 +1,7 @@
 # ReadMe -- Project 1: Process Scheduler
  - Delete or modify  if you want
- - Given information: 
+----------------------------------------
+# Given information: 
 
 CSCE 4600.003
 Spring 2016
@@ -30,7 +31,7 @@ different sets of processes (with different process characteristics).
 
 ---------------------------------------------------------------------
 
-Deliverables: 
+## Deliverables: 
 Write a minimum 5-page report that highlights the performance and differences of the scheduling
 algorithms. You must discuss all the limitations and assumptions. In detail, show how you analyzed the
 performance (i.e., average waiting time) and present your results. You must submit well-documented code along
@@ -38,3 +39,11 @@ with specification of any special compilation procedures. The code must compile 
 CSE Linux machines to receive credit. Include in the report the list of team members who participated. Only one
 person needs to submit the required files form each team.
 Have FUN!!
+
+---------------------------------------------
+
+# About This Project:
+
+### Compiles with: make
+### Runs with: make run
+### Current status: Filling out function bodies for the Scheduler class-functions
