@@ -44,6 +44,6 @@ Have FUN!!
 
 # About This Project:
 
-### Compiles with: make
-### Runs with: make run
+### Compiles with: `make`
+### Runs with: `make run`
 ### Current status: Filling out function bodies for the Scheduler class-functions
