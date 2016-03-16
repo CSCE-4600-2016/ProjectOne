@@ -98,7 +98,7 @@ class DegreeOfMultiProgramming
 			aka processing outside this class 
 		*/
 
-		std::deque<ProcessControlBlock> & GetRunnableProcesses() { return runnableProcesses; }			
+		std::deque<PCB> & GetRunnableProcesses() { return runnableProcesses; }			
 					
 };
 
@@ -234,7 +234,7 @@ class SchedulingAlgorithm
 			if(params.iInContextSwitch)
 			{
 				--params.iInContextSwitch;
-				for (itrReadyProcesses itr = readyProcesses.begin(); itr != readyProcesses.end(); itr++)
+				for (ReadyProcItr itr = readyProcesses.begin(); itr != readyProcesses.end(); itr++)
 					itr -> iWaitTime ++;
 			}
 		}
@@ -251,11 +251,11 @@ class SchedulingAlgorithm
 class FIFO:public SchedulingAlgorithm
 {
 	public:
-		virtual void RunAlgorithm(ProcessTable &processTable, SchedulingAlgorithmParameters &params, std::vector<ProcessControlBlock> &readyProcesses);
-		virtual int GetNewlyReadyProcesses(ProcessTable &processTable, SchedulingAlgorithmParameters 
-			&params, std::vector<ProcessControlBlock> &readyProcesses);
+		virtual void RunAlgorithm(ProcessTable &processTable, SchedAlgoParams &params, std::vector<PCB> &readyProcesses);
+		virtual int GetNewlyReadyProcesses(ProcessTable &processTable, SchedAlgoParams 
+			&params, std::vector<PCB> &readyProcesses);
 		virtual
-		void ContextSwitch(SchedulingAlgorithmParameters &params, std::vector<ProcessControlBlock> &readyProcesses)
+		void ContextSwitch(SchedAlgoParams &params, std::vector<PCB> &readyProcesses)
 		{
 			if(params.iInContextSwitch)
 			{
@@ -264,7 +264,7 @@ class FIFO:public SchedulingAlgorithm
 					itrPro -> iWaitTime ++;
 
 				--params.iInContextSwitch;
-				for (itrRunnableProcesses itr = params.degreeOfMultiprogramming.GetRunnableProcesses().begin(); 
+				for (RunnableProcItr itr = params.degreeOfMultiprogramming.GetRunnableProcesses().begin(); 
 					itr != params.degreeOfMultiprogramming.GetRunnableProcesses().end(); itr++)
 						if (itr -> state == READY)
 						itr -> iWaitTime ++;
