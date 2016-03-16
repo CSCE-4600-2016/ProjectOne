@@ -18,9 +18,9 @@ enum ProcessState{ READY, RUNNING, NOT_LOADED, DONE };
  {
  	PCB(int procID = 0, int iArrv = 0, int iTotlRun =0,
  		int iWait = 0, ProcessState st = NOT_LOADED, 
- 		int et, int currRunTime = 0, int iTurnAround = 0,
- 		int actStart = 0)
- 			: iProcessID, iTimeSubmitted(iArrv), 
+ 		int et = 0, int currRunTime = 0, int iTurnAround = 0,
+        int actStart = 0)
+        :iProcessID, iTimeSubmitted(iArrv),
  			iTotalRunTime(iTotlRun), iWaitTime(Wait), state(st),
  			iEndTime(et), iCurrentRunningTime(currRunTime),
  			iTurnAroundTime(iTurnAround), iQuantum(0), 
