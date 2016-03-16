@@ -41,6 +41,8 @@ class Scheduler
 		/* Getter for the algorithm paramters */
 		SchedAlgoParams *GetSchedAlgoParams(){ return &algoParams }
 
+		/* Finally a vector of type-PCB for the ready processes */
+		std::vector<PCB> readyProcesses;
 };
 
 #endif // SCHEDULER_H
