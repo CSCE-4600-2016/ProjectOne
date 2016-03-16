@@ -2,6 +2,8 @@
 	File: ProcessTable.h
 	Desc: Defining ProcessControlBlock and ProcessTable objects
 */
+#ifndef PROCESSTABLE_H
+#define PROCESSTABLE_H
 
 #include <vector>
 
@@ -44,3 +46,4 @@ enum ProcessState{ READY, RUNNING, NOT_LOADED, DONE };
 // A usable struct containing a vector of PCB process objects
  struct ProcessTable { std::vector<PCB>Processes; };
  
+#endif

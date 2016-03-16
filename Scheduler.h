@@ -35,7 +35,10 @@ class Scheduler
 		/* RunProcesses */
 		void RunProcesses();
 
+		/* Note that the accessors below are not explicitly implemented in Scheduler.cpp */
+		
 		/* Getter for the ProcessTable */
+
 		ProcessTable *GetProcessTable(){ return &processTable; } 
 
 		/* Getter for the algorithm paramters */
