@@ -1,6 +1,17 @@
 # ReadMe -- Project 1: Process Scheduler
  - Delete or modify  if you want
 ----------------------------------------
+
+# Info On ChadTestBranch
+This is a basic framework I had in mind and wanted to test out to see how easy it would be to build upon.
+As of right now it will run a FIFO simulation
+##### Compile and run Information:
+Compile all cpp files in the /src directory in C++11 mode with g++.
+Run the program with an input redirection to process.csv. Process.csv file is a generated set of process to test on
+Example: ./a.out < process.csv
+
+----------------------------------------
+
 # Given information: 
 
 CSCE 4600.003
