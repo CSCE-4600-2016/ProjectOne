@@ -39,6 +39,16 @@ ProcessGenerator::ProcessGenerator(int psID) {
     
 }
 
+int ProcessGenerator::getProcessID() {
+    return processID;
+}
+int ProcessGenerator::getNumberOfCycles() {
+    return numberOfCycles;
+}
+int ProcessGenerator::getSizeOfMemoryFootprint() {
+    return sizeOfMemoryFootprint;
+}
+
 void ProcessGenerator::printProcessID() {
     cout << "Process ID = " << processID << endl;
 }

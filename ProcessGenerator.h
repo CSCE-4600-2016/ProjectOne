@@ -26,7 +26,12 @@ public:
     //Constructor: Generate random numbers for number of Cycles and Size of memory footprint
     //Arg:         The Process's id
     ProcessGenerator(int psID);
-
+    
+    //Getters
+    int getProcessID();
+    int getNumberOfCycles();
+    int getSizeOfMemoryFootprint();
+    
     void printProcessID();
     void printNumberOfCycles();
     void printSizeOfMemoryFootprint();
