@@ -1,0 +1,53 @@
+#ifndef PROCESS_SIMULATOR_H_
+#define PROCESS_SIMULATOR_H_
+
+#include "Helpers.h"
+#include "ProcessSet.h"
+
+/// <summary>
+/// Represents a simulation of a process scheduling algorithm
+/// </summary>
+class ProcessSimulator
+{
+public:	
+	ProcessSimulator();	
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ProcessSimulator"/> class.
+	/// </summary>
+	/// <param name="algorithim">The algorithim.</param>
+	/// <param name="contextSwitch">The context switch.</param>
+	/// <param name="processSet">The process set.</param>
+	ProcessSimulator(SchedulingAlgorithim algorithim, unsigned int contextSwitch, const ProcessSet& processSet);
+	
+	/// <summary>
+	/// Runs the simulation.
+	/// </summary>
+	void RunSimulation();
+
+	/// <summary>
+	/// Gets the average wait time.
+	/// </summary>
+	/// <returns></returns>
+	int GetAverageWaitTime() const;
+	
+	/// <summary>
+	/// Gets the total penalty.
+	/// </summary>
+	/// <returns></returns>
+	int GetTotalPenalty() const;
+
+private:
+	// Driver Methods for the individual simulation types
+	void RunFifoSimulation();
+
+	unsigned int waitingTime;
+	unsigned int totalRunningTime;
+	SchedulingAlgorithim currentAlgorithim;
+	unsigned int contextPenalty;
+	unsigned int totalPenalty;
+	ProcessSet scheduledProcesses;
+	unsigned int numberProcesses;
+
+};
+
+#endif
