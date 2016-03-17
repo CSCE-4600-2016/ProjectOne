@@ -35,7 +35,7 @@ class DegreeOfMultiProgramming
 	public: 
 		
 		/* Constructor, params: degree of multiprogramming, m */
-		DegreeOfMultiProgramming(int m): degree(m)
+		degreeOfMultiprogramming(int m): degree(m)
 		{
 
 		}
@@ -111,7 +111,7 @@ class DegreeOfMultiProgramming
 struct SchedAlgoParams
 {
 	SchedAlgoParams(int m):
-	degreeOfMultiProgramming(m) {}
+	degreeOfMultiprogramming(m) {}
 
 	/* The members of this struct 
 	get initialized in the Scheduler-class constructor 
@@ -252,10 +252,11 @@ class FIFO:public SchedulingAlgorithm
 {
 	public:
 		virtual void RunAlgorithm(ProcessTable &processTable, SchedAlgoParams &params, std::vector<PCB> &readyProcesses);
+		
 		virtual int GetNewlyReadyProcesses(ProcessTable &processTable, SchedAlgoParams 
 			&params, std::vector<PCB> &readyProcesses);
-		virtual
-		void ContextSwitch(SchedAlgoParams &params, std::vector<PCB> &readyProcesses)
+
+		virtual void ContextSwitch(SchedAlgoParams &params, std::vector<PCB> &readyProcesses)
 		{
 			if(params.iInContextSwitch)
 			{
@@ -277,7 +278,10 @@ class FIFO:public SchedulingAlgorithm
 ------------------------------------*/
 class SJF:public SchedulingAlgorithm
 {
-
+	virtual void RunAlgorithm(ProcessTable &processTable, SchedAlgoParams &params, std::vector<PCB> &readyProcesses);
+		
+		virtual int GetNewlyReadyProcesses(ProcessTable &processTable, SchedAlgoParams 
+			&params, std::vector<PCB> &readyProcesses);
 };
 
 /*----------------------------------
@@ -285,7 +289,10 @@ class SJF:public SchedulingAlgorithm
 ------------------------------------*/
 class SRT:public SchedulingAlgorithm
 {
-
+	virtual void RunAlgorithm(ProcessTable &processTable, SchedAlgoParams &params, std::vector<PCB> &readyProcesses);
+		
+		virtual int GetNewlyReadyProcesses(ProcessTable &processTable, SchedAlgoParams 
+			&params, std::vector<PCB> &readyProcesses);
 };
 
 /*----------------------------------
@@ -293,6 +300,25 @@ class SRT:public SchedulingAlgorithm
 ------------------------------------*/
 class RoundRobin:public SchedulingAlgorithm
 {
+	virtual void RunAlgorithm(ProcessTable &processTable, SchedAlgoParams &params, std::vector<PCB> &readyProcesses);
+		
+		virtual int GetNewlyReadyProcesses(ProcessTable &processTable, SchedAlgoParams 
+			&params, std::vector<PCB> &readyProcesses);
+
+	virtual void ContextSwitch(SchedAlgoParams &params, std::vector<PCB> &readyProcesses)
+		{
+			if(params.iInContextSwitch)
+			{
+				ReadyProcItr itrPro = readyProcesses.begin();
+				for (itrPro != readyProcesses.end(); itrPro++)
+					itrPro -> iWaitTime ++;
+
+				--params.iInContextSwitch;
+				for (RunnableProcItr itr = params.degreeOfMultiprogramming.GetRunnableProcesses().begin(); itr != params.degreeOfMultiprogramming.GetRunnableProcesses().end(); itr++)
+						if (itr -> state == READY)
+							itr -> iWaitTime ++;
+			}
+		}	
 
 };
 

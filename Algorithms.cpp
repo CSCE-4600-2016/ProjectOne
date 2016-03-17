@@ -4,26 +4,13 @@
 	Notes: Algorithms are:
 		- Round Robin
 		- Shortest Job First
-		- Priority Queue
+		- FIFO
 		- Shortest Remaining Time
 */
 
-class degreeOfMultiProgramming
-{
+#include "ProcessAlgorithms.h"
+#include "Utility.h"
+#include <algorithm>
+#include <iostream>
+#include <functional>
 
-};
-
-// Essential struct for Scheduler class functions and data
-struct SchedAlgoParams
-{
-	SchedAlgoParams(int m) : degreeOfMultiprogramming(m) {}
-	int iCurrentTime;
-	int iCsp;
-	int iQuantum;
-	int iInContextSwitch;
-	int iCountNewReadyProcesses;
-	int iOverHead;
-	std::vector<PCB> swappedProcesses;
-	//DegreeOfMultiprogramming degreeOfMultiprogramming;
-	bool bRecentNewProcess;
-};		
