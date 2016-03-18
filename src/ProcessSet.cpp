@@ -81,8 +81,8 @@ void ProcessSet::PopProcess()
 /// <summary>
 /// Gets the first process in the process set.
 /// </summary>
-/// <returns></returns>
-Process ProcessSet::FirstProcess()
+/// <returns>Reference to the first process</returns>
+Process& ProcessSet::FirstProcess()
 {
 	return processSet.front();
 

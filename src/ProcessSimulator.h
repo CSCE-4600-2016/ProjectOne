@@ -1,6 +1,8 @@
 #ifndef PROCESS_SIMULATOR_H_
 #define PROCESS_SIMULATOR_H_
 
+#include <map>
+
 #include "Helpers.h"
 #include "ProcessSet.h"
 
@@ -39,6 +41,13 @@ public:
 private:
 	// Driver Methods for the individual simulation types
 	void RunFifoSimulation();
+	
+	/// <summary>
+	/// The process waiting times
+	/// key: processId
+	/// value: process waiting time
+	/// </summary>
+	std::map<int, int> processWaitingTimes;
 
 	unsigned int waitingTime;
 	unsigned int totalRunningTime;

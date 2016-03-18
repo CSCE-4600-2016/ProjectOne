@@ -49,7 +49,7 @@ public:
 	/// Gets the first process in the process set.
 	/// </summary>
 	/// <returns></returns>
-	Process FirstProcess();
+	Process& FirstProcess();
 
 private:
 	std::deque<Process> processSet;

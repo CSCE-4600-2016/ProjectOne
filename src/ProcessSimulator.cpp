@@ -45,7 +45,20 @@ void ProcessSimulator::RunSimulation()
 /// <returns></returns>
 int ProcessSimulator::GetAverageWaitTime() const
 {
-	return (waitingTime / numberProcesses);
+	int waitingTimeSum = 0;
+	for (auto iter = processWaitingTimes.begin(); iter != processWaitingTimes.end(); ++iter)
+	{
+		// set a temporary iter at the end and go back one to get the final iter
+		auto finalIter = processWaitingTimes.end();
+		--finalIter;
+		// we don't need to calculate the very last one because their was no processes after it so nothing waited
+		if(iter != finalIter)
+		{
+			waitingTimeSum += iter->second;
+		}
+	}
+
+	return waitingTimeSum / processWaitingTimes.size();
 }
 
 /// <summary>
@@ -65,14 +78,18 @@ void ProcessSimulator::RunFifoSimulation()
 	while(scheduledProcesses.GetNumberProcesses() > 0)
 	{
 		// get a reference to the current scheduled process
-		Process currentProcess = scheduledProcesses.FirstProcess();
+		auto currentProcess = scheduledProcesses.FirstProcess();
 		runningQueue.AddProcess(currentProcess);
+
 		// increase the total time by how long this process needs to run
-		totalRunningTime += currentProcess.numberCycles;
+		totalRunningTime += (currentProcess.numberCycles + contextPenalty);
+
 		// calculate the time this process hade to wait and add it to the total waiting time
-		waitingTime += currentProcess.arrivalTime;
+		// 50 is because this process came in 50 cycles later
+		waitingTime += (currentProcess.numberCycles + contextPenalty) - 50;
+		processWaitingTimes.insert(std::pair<int, int>(currentProcess.processId, waitingTime));
+
 		totalPenalty += contextPenalty;
-		totalRunningTime += contextPenalty;
 		scheduledProcesses.PopProcess();
 
 	}
