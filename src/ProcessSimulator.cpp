@@ -66,22 +66,19 @@ void ProcessSimulator::RunFifoSimulation()
 	// while we still have processes scheduled to run
 	while(scheduledProcesses.GetNumberProcesses() > 0)
 	{
-
 		Process currentProcess = scheduledProcesses.FirstProcess();
         
 		runningQueue.AddProcess(currentProcess);
         
-		// increase the total time by how long this process needs to run
+		// Increase the total time by how long this process needs to run
 		totalRunningTime += currentProcess.numberCycles;
-        
-		// calculate the time this process hade to wait and add it to the total waiting time
-		//waitingTime += currentProcess.arrivalTime;
         
         // If this is the first process, we simply ignore calcuating the waiting time, but we will
         // store the current process running cycle to totalCycleNumber var. Next,
         // if this is not the first process, we will first compare the totalCycleNumber to current process
         // arrival Time. If this is true, we have a waiting time, and we also need to update the totoal cycle number. It it's false, we don't have the waiting time.
         // (waiting time = 0)
+        
         
         if(iProcess != 1) {
             if (totalCycleNumber > currentProcess.arrivalTime) {
@@ -93,6 +90,7 @@ void ProcessSimulator::RunFifoSimulation()
             }
             
         }
+        // No waiting time since this is the first process
         else {
             totalCycleNumber = currentProcess.numberCycles;
             iProcess++;
