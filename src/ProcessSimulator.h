@@ -30,7 +30,7 @@ public:
 	/// Gets the average wait time.
 	/// </summary>
 	/// <returns></returns>
-	int GetAverageWaitTime() const;
+	float GetAverageWaitTime() const;
 	
 	/// <summary>
 	/// Gets the total penalty.

@@ -1,5 +1,5 @@
 #include "ProcessSimulator.h"
-
+#include <iostream>
 
 
 /// <summary>
@@ -43,22 +43,9 @@ void ProcessSimulator::RunSimulation()
 /// Gets the average wait time.
 /// </summary>
 /// <returns></returns>
-int ProcessSimulator::GetAverageWaitTime() const
+float ProcessSimulator::GetAverageWaitTime() const
 {
-	int waitingTimeSum = 0;
-	for (auto iter = processWaitingTimes.begin(); iter != processWaitingTimes.end(); ++iter)
-	{
-		// set a temporary iter at the end and go back one to get the final iter
-		auto finalIter = processWaitingTimes.end();
-		--finalIter;
-		// we don't need to calculate the very last one because their was no processes after it so nothing waited
-		if(iter != finalIter)
-		{
-			waitingTimeSum += iter->second;
-		}
-	}
-
-	return waitingTimeSum / processWaitingTimes.size();
+	return ((float)waitingTime / (float)numberProcesses);
 }
 
 /// <summary>
@@ -73,24 +60,45 @@ int ProcessSimulator::GetTotalPenalty() const
 void ProcessSimulator::RunFifoSimulation()
 {
 	ProcessSet runningQueue;
+    int iProcess = 1;
+    int totalCycleNumber = 0;
 
 	// while we still have processes scheduled to run
 	while(scheduledProcesses.GetNumberProcesses() > 0)
 	{
-		// get a reference to the current scheduled process
-		auto currentProcess = scheduledProcesses.FirstProcess();
+
+		Process currentProcess = scheduledProcesses.FirstProcess();
+        
 		runningQueue.AddProcess(currentProcess);
-
+        
 		// increase the total time by how long this process needs to run
-		totalRunningTime += (currentProcess.numberCycles + contextPenalty);
-
+		totalRunningTime += currentProcess.numberCycles;
+        
 		// calculate the time this process hade to wait and add it to the total waiting time
-		// 50 is because this process came in 50 cycles later
-		waitingTime += (currentProcess.numberCycles + contextPenalty) - 50;
-		processWaitingTimes.insert(std::pair<int, int>(currentProcess.processId, waitingTime));
-
+		//waitingTime += currentProcess.arrivalTime;
+        
+        // If this is the first process, we simply ignore calcuating the waiting time, but we will
+        // store the current process running cycle to totalCycleNumber var. Next,
+        // if this is not the first process, we will first compare the totalCycleNumber to current process
+        // arrival Time. If this is true, we have a waiting time, and we also need to update the totoal cycle number. It it's false, we don't have the waiting time.
+        // (waiting time = 0)
+        
+        if(iProcess != 1) {
+            if (totalCycleNumber > currentProcess.arrivalTime) {
+                waitingTime += (totalCycleNumber - currentProcess.arrivalTime);
+                totalCycleNumber += currentProcess.numberCycles;
+            }
+            else {
+                totalCycleNumber = (currentProcess.arrivalTime + currentProcess.numberCycles);
+            }
+            
+        }
+        else {
+            totalCycleNumber = currentProcess.numberCycles;
+            iProcess++;
+        }
+        
 		totalPenalty += contextPenalty;
 		scheduledProcesses.PopProcess();
-
 	}
 }
