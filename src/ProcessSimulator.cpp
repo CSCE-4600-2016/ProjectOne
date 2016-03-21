@@ -181,9 +181,9 @@ void ProcessSimulator::RunSJFSimulation()
                 // get the process that has shortest cycle but also arrived
                 if(ProcessSet.at(i).arrivalTime <= perviousCycle)
                 {
-                    //waitingTime += perviousCycle - ProcessSet.at(i).arrivalTime;
+                    waitingTime += perviousCycle - ProcessSet.at(i).arrivalTime;
                     
-                    cout << "waiting time = " << waitingTime << endl;
+                    //cout << "waiting time = " << waitingTime << endl;
                     perviousCycle = perviousCycle + ProcessSet.at(i).numberCycles;
                     
                     // perviousCycle is still less than
