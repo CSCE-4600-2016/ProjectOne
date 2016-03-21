@@ -37,11 +37,17 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	int GetTotalPenalty() const;
+    
 
 private:
 	// Driver Methods for the individual simulation types
 	void RunFifoSimulation();
+    
+    void RunRRSimulation();
+    
+    void RunSJFSimulation();
 	
+
 	/// <summary>
 	/// The process waiting times
 	/// key: processId

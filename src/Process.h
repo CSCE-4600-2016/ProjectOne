@@ -15,6 +15,10 @@ public:
 	// numberCycles - simulates the number or cycles a process uses
 	// memoryFootprint - simulates the memory footprint	
 	Process(unsigned int processId, unsigned int numberCycles, unsigned int memoryFootprint, unsigned int arrivalTime);
+    
+    bool operator<(const Process& s2) const {
+        return this->numberCycles < s2.numberCycles;
+    }
 	
 	/// <summary>
 	/// The process identifier
