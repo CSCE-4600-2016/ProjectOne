@@ -1,8 +1,10 @@
 #include "ProcessSimulator.h"
 #include <iostream>
 #include <vector>
+#include <algorithm> //std::sort
 
 using namespace std;
+
 /// <summary>
 /// Initializes a new instance of the <see cref="ProcessSimulator"/> class.
 /// </summary>
@@ -67,7 +69,7 @@ void ProcessSimulator::RunFifoSimulation()
 {
 	ProcessSet runningQueue;
     int iProcess = 1;
-    int totalCycleNumber = 0;
+    unsigned int totalCycleNumber = 0;
 
 	// while we still have processes scheduled to run
 	while(scheduledProcesses.GetNumberProcesses() > 0)
@@ -210,6 +212,7 @@ void ProcessSimulator::RunSJFSimulation()
     
 }
 
+// Round Robin
 void ProcessSimulator::RunRRSimulation()
 {
     // Quantum time of 50 cycles
@@ -277,6 +280,7 @@ void ProcessSimulator::RunRRSimulation()
 //            i = 0;
 //        }
 //    }
+
     int dec = 0;
     for(time = 0; time < totalCycleTime;)
     {
@@ -308,4 +312,41 @@ void ProcessSimulator::RunRRSimulation()
         }
     }
     
+}
+
+
+///---------------------------
+
+
+/// <summary>
+/// Simulating 4-core multiprocessors
+/// </summary>
+
+
+/// struct Processor
+/// Simulating a 4-core processor by using a vector of processes
+
+struct Processor
+{
+	std::vector<Process> processList;
+	int totalCycleCount;
+	int AvailableMemory;
+};
+
+/// Create a list of processors  
+std::vector<Processor> processorList;
+
+/// Create 4 processors with 4GB of memory each 
+void generateProcessors()
+{
+	int numOfProcessors = 4;
+	int i;
+
+	for(i = 0; i < numOfProcessors; i++)
+	{
+		Processor currentProcessor;
+		currentProcessor.totalCycleCount = 0;
+		currentProcessor.AvailableMemory = 4000000;
+		processorList.push_back(currentProcessor);
+	}
 }
