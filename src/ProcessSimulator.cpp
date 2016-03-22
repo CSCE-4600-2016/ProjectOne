@@ -335,50 +335,56 @@ void ProcessSimulator::RunRRSimulation()
            // decrement process from sched queue
            scheduledProcesses.PopProcess();
 	   }
-	   
-	//    for(int i = 0; remainProcess != 0;)
-	//    {
-	//        if(remainingTime[i] <= quantumTime && remainingTime[i] > 0)
-	//        {
-	//            time += remainingTime[i];
-	//            remainingTime[i] = 0;
-	//            isProcessDone = 1;
-	//        }
-	//        else if(remainingTime[i] > 0)
-	//        {
-	//            remainingTime[i] -= quantumTime;
-	//            time += quantumTime;
-	//        }
-	//        
-	//        // If current process is done
-	//        if(remainingTime[i] == 0 && isProcessDone == 1) {
-	//            remainProcess--;
-	//            std::cout << time - processSet[i].arrivalTime - processSet[i].numberCycles << std::endl;
-	//            waitingTime += (time - processSet[i].arrivalTime - processSet[i].numberCycles);
-	//            isProcessDone = 0;
-	//        }
-	//        
-	//        if(i == (totalNumberOfProcess - 1))
-	//        {
-	//            i = 0;
-	//        }
-	//        else if (processSet[i+1].arrivalTime <= time)
-	//        {
-	//            i++;
-	//        }
-	//        else
-	//        {
-	//            i = 0;
-	//        }
-	//    }
-	
-	   int processingTime = 0;
-       
-	   for(time = 0; time < totalCycleTime;)
+
+	//-----------------------------------------------------------
+	   for(int i = 0; remainProcess != 0;)
 	   {
-	       for(int i = 0; i < totalNumberOfProcess;i++)
+            // check if the rem time for the current proc is < quantum
+	       if((remainingTime[i] <= quantumTime) && (remainingTime[i] > 0))
 	       {
-	           if(processSet[i].arrivalTime <= time && finish[i] == 0)
+
+	           time += remainingTime[i];
+	           remainingTime[i] = 0;
+	           isProcessDone = 1;
+	       }
+	       else if(remainingTime[i] > 0)
+	       {
+	           remainingTime[i] -= quantumTime;
+	           time += quantumTime;
+	       }
+	       
+	       // If current process is done
+	       if(remainingTime[i] == 0 && isProcessDone == 1) {
+	           remainProcess--;
+	           std::cout << time - processSet[i].arrivalTime - processSet[i].numberCycles << std::endl;
+	           waitingTime += (time - processSet[i].arrivalTime - processSet[i].numberCycles);
+	           isProcessDone = 0;
+	       }
+	       
+	       if(i == (totalNumberOfProcess - 1))
+	       {
+	           i = 0;
+	       }
+	       else if (processSet[i+1].arrivalTime <= time)
+	       {
+	           i++;
+	       }
+	       else
+	       {
+	           i = 0;
+	       }
+	   }
+//---------------------------------------------------
+	   // we set our proc time to 0
+	   int processingTime = 0;
+
+	   for(time = 0; time < totalCycleTime;) // traverse from 0 to totCycleTime
+	   {
+           // as long as we are less than all procs 
+	       for(int i = 0; i < totalNumberOfProcess;i++) 
+	       {
+               // 
+	           if((processSet[i].arrivalTime <= time) && finish[i] == 0)
 	           {
 	               if(remainingTime[i] < quantumTime)
 	               {
