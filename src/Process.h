@@ -37,6 +37,11 @@ public:
 	/// The arrival time
 	/// </summary>
 	unsigned int arrivalTime;
+
+	/// The following are specific to Round Robin Scheduling Algorithm
+	unsigned int waitTime;
+
+	unsigned int turnAroundTime;
 };
 
 #endif

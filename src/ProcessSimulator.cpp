@@ -284,103 +284,135 @@ void ProcessSimulator::RunSJFSimulation()
 // Round Robin
 void ProcessSimulator::RunRRSimulation()
 {
-	//    // Quantum time of 50 cycles
-	//    int quantumTime = 50;
-	//    int time = 0;
-	//    int isProcessDone = 0;
-	//    
-	//    int remainProcess = scheduledProcesses.GetNumberProcesses();
-	//    int totalNumberOfProcess = remainProcess;
-	//    
-	//    Process *processSet = new Process[totalNumberOfProcess];
-	//    int remainingTime[totalNumberOfProcess];
-	//    int finish[totalNumberOfProcess];
-	//    int wait[totalNumberOfProcess];
-	//    int count = 0;
-	//    int totalCycleTime = 0;
-	//
-	//    // Pass the processes in queue into an array. This makes the whole thing easier.
-	//    while(scheduledProcesses.GetNumberProcesses() > 0)
-	//    {
-	//        Process newProcess = scheduledProcesses.FirstProcess();
-	//        processSet[count] = newProcess;
-	//        totalCycleTime += newProcess.numberCycles;
-	//
-	//        remainingTime[count] = newProcess.numberCycles;
-	//        
-	//        
-	//        finish[count] = 0;
-	//        count++;
-	//        scheduledProcesses.PopProcess();
-	//    }
-	//    
-	////    for(int i = 0; remainProcess != 0;)
-	////    {
-	////        if(remainingTime[i] <= quantumTime && remainingTime[i] > 0)
-	////        {
-	////            time += remainingTime[i];
-	////            remainingTime[i] = 0;
-	////            isProcessDone = 1;
-	////        }
-	////        else if(remainingTime[i] > 0)
-	////        {
-	////            remainingTime[i] -= quantumTime;
-	////            time += quantumTime;
-	////        }
-	////        
-	////        // If current process is done
-	////        if(remainingTime[i] == 0 && isProcessDone == 1) {
-	////            remainProcess--;
-	////            std::cout << time - processSet[i].arrivalTime - processSet[i].numberCycles << std::endl;
-	////            waitingTime += (time - processSet[i].arrivalTime - processSet[i].numberCycles);
-	////            isProcessDone = 0;
-	////        }
-	////        
-	////        if(i == (totalNumberOfProcess - 1))
-	////        {
-	////            i = 0;
-	////        }
-	////        else if (processSet[i+1].arrivalTime <= time)
-	////        {
-	////            i++;
-	////        }
-	////        else
-	////        {
-	////            i = 0;
-	////        }
-	////    }
-	//
-	//    int dec = 0;
-	//    for(time = 0; time < totalCycleTime;)
-	//    {
-	//        for(int i = 0; i < totalNumberOfProcess;i++)
-	//        {
-	//            if(processSet[i].arrivalTime <= time && finish[i] == 0)
-	//            {
-	//                if(remainingTime[i] < quantumTime)
-	//                {
-	//                    dec = remainingTime[i];
-	//                }
-	//                else
-	//                {
-	//                    dec = quantumTime;
-	//                }
-	//                
-	//                remainingTime[i] = remainingTime[i] - dec;
-	//                if(remainingTime[i] == 0) {
-	//                    finish[i] = 1;
-	//                }
-	//                for (int j = 0; j < totalNumberOfProcess; j++) {
-	//                    if(j!=i && finish[j] == 0 && processSet[j].arrivalTime <= time)
-	//                    {
-	//                        waitingTime += dec;
-	//                    }
-	//                }
-	//                time = time + dec;
-	//            }
-	//        }
-	//    }
-	//    
+	   // Quantum time of 50 cycles, should be fixed
+	   const int quantumTime = 50;
+	   int time = 0;
+	   int isProcessDone = 0; // should be a bool...
+	   
+	   // set remaining procs to number of procs currently in queue
+       int remainProcess = scheduledProcesses.GetNumberProcesses();
+	   // total becomes remaining
+       int totalNumberOfProcess = remainProcess; 
+	   
+       // create a new process array object called processSet
+       // populate with the total number of procs
+	   Process *processSet = new Process[totalNumberOfProcess];
+	   // Populate remaining time, finish or "complete" processes, and waiting processes 
+       // with total # of procs
+       int remainingTime[totalNumberOfProcess];
+	   int finish[totalNumberOfProcess];
+	   int wait[totalNumberOfProcess];
+	   
+       // init counter var and cycle time to 0. Assuming that totCycletime is
+       // going to be used in updating the CSP when this algo runs every iteration
+       int count = 0;
+	   int totalCycleTime = 0;
+	
+	   // Pass the processes in queue into an array. This makes the whole thing easier.
+       // Check while there's still scheduled procs in the queue...
+	   while(scheduledProcesses.GetNumberProcesses() > 0)
+	   {
+           // create new process object and feed it the first scheduled proc 
+	       Process newProcess = scheduledProcesses.FirstProcess();
+          
+           // update process set with counter for index, and set = to above object
+	       processSet[count] = newProcess;
+          
+           // increment totalCycletime by # cycles of the newProcess object
+	       totalCycleTime += newProcess.numberCycles;
+	      
+           // rem. time array gets updated with counter for index, set
+           // equal to the # of cycles 
+	       remainingTime[count] = newProcess.numberCycles;
+	       
+	       // finish is a array keeping track of complete procs. We populate with count and set
+           // == to zero 
+	       finish[count] = 0;
+	       
+           //update count 
+           count++;
+	       
+           // decrement process from sched queue
+           scheduledProcesses.PopProcess();
+	   }
+
+	//-----------------------------------------------------------
+	   for(int i = 0; remainProcess != 0;)
+	   {
+            // check if the rem time for the current proc is < quantum
+	       if((remainingTime[i] <= quantumTime) && (remainingTime[i] > 0))
+	       {
+
+	           time += remainingTime[i];
+	           remainingTime[i] = 0;
+	           isProcessDone = 1;
+	       }
+	       else if(remainingTime[i] > 0)
+	       {
+	           remainingTime[i] -= quantumTime;
+	           time += quantumTime;
+	       }
+	       
+	       // If current process is done
+	       if(remainingTime[i] == 0 && isProcessDone == 1) {
+	           remainProcess--;
+	           std::cout << time - processSet[i].arrivalTime - processSet[i].numberCycles << std::endl;
+	           waitingTime += (time - processSet[i].arrivalTime - processSet[i].numberCycles);
+	           isProcessDone = 0;
+	       }
+	       
+	       if(i == (totalNumberOfProcess - 1))
+	       {
+	           i = 0;
+	       }
+	       else if (processSet[i+1].arrivalTime <= time)
+	       {
+	           i++;
+	       }
+	       else
+	       {
+	           i = 0;
+	       }
+	   }
+//---------------------------------------------------
+	   // we set our proc time to 0
+	   int processingTime = 0;
+
+	   for(time = 0; time < totalCycleTime;) // traverse from 0 to totCycleTime
+	   {
+           // as long as we are less than all procs 
+	       for(int i = 0; i < totalNumberOfProcess;i++) 
+	       {
+               // 
+	           if((processSet[i].arrivalTime <= time) && finish[i] == 0)
+	           {
+	               if(remainingTime[i] < quantumTime)
+	               {
+	                   processingTime = remainingTime[i];
+	               }
+	               else
+	               {
+	                   processingTime = quantumTime;
+	               }
+	               
+	               remainingTime[i] = remainingTime[i] - processingTime;
+	               
+                   if(remainingTime[i] == 0) 
+                   {
+	                   finish[i] = 1;
+	               }
+	               for (int j = 0; j < totalNumberOfProcess; j++) 
+                   {
+	                   if(j!=i && finish[j] == 0 && processSet[j].arrivalTime <= time)
+	                   {
+	                       waitingTime += processingTime;
+	                   }
+	               }
+	               time = time + processingTime;
+	           }
+	       }
+	   }
+	   
 }
 
 
