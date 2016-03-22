@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <chrono>
 
 struct Process
 {
@@ -12,18 +13,16 @@ struct Process
 	int memoryFootprint;
 };
 
+std::queue<Process> GenerateNormalDistribution(std::mt19937& randEngine, const int processCount);
+std::queue<Process> GeneratePoissonDistribution(std::mt19937& randEngine, const int processCount);
+std::queue<Process> GenerateExponentialDistribution(std::mt19937& randEngine, const int processCount);
+
 int main(int argc, char* argv[])
 {
-	// random normal distribution needed variables
-	std::default_random_engine engine;
-	std::normal_distribution<> cyclesDistribution(6000, 2500);
-	std::normal_distribution<> memoryDistribution(20, 24.5);
+	// random distribution needed variables
+	auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+	std::mt19937 gen_engine(static_cast<unsigned int>(seed));
 	std::queue<Process> processQueue;
-	std::vector<int> cycles;
-	std::vector<int> memoryFootprints;
-
-	std::ofstream processCsv;
-	processCsv.open("process.csv");
 
 	// we didn't have arguments for how many processes to generate
 	if(argc < 2)
@@ -32,20 +31,65 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 	int processCount = std::stoi(argv[1]);
-	int cyclesMean = 0;
-	int memoryMean = 0;
+	std::string distributionType = argv[2];
 
+	if(distributionType == "normal")
+	{
+		processQueue = GenerateNormalDistribution(gen_engine, processCount);
+	}
+	else if(distributionType == "exponential")
+	{
+		processQueue = GenerateExponentialDistribution(gen_engine, processCount);
+	}
+	else if(distributionType == "poisson")
+	{
+		processQueue = GeneratePoissonDistribution(gen_engine, processCount);
+	}
+	else
+	{
+		std::cout << "ERROR: Must enter the distribution to generate\n";
+		return -1;
+	}
+
+
+	return 0;
+}
+
+std::queue<Process> GenerateNormalDistribution(std::mt19937& randEngine, const int processCount)
+{
+	std::normal_distribution<> cyclesDistribution(6000, 6000);
+	std::normal_distribution<> memoryDistribution(20, 20);
+	std::queue<Process> processQueue;
+	std::vector<double> cycles;
+	std::vector<double> memoryFootprints;
+	std::ofstream processCsv;
+	processCsv.open("process-normal-distribution.csv");
 
 	for (int i = 0; i < processCount * 2; i++)
 	{
-		int cycle = cyclesDistribution(engine);
-		int memory = memoryDistribution(engine);
+		double cycle = std::round(cyclesDistribution(randEngine));
+		double memory = std::round(memoryDistribution(randEngine));
 
-		if((cycle >= 1000) && (cycle <= 11000))
+		if ((cycle >= 1000) && (cycle <= 11000))
 		{
 			cycles.push_back(cycle);
 		}
-		if((memory >= 1) && (memory <= 100))
+		if ((memory >= 1) && (memory <= 100))
+		{
+			memoryFootprints.push_back(memory);
+		}
+	}
+
+	for (int i = 0; i < processCount * 2; i++)
+	{
+		double cycle = std::round(cyclesDistribution(randEngine));
+		double memory = std::round(memoryDistribution(randEngine));
+
+		if ((cycle >= 1000) && (cycle <= 11000))
+		{
+			cycles.push_back(cycle);
+		}
+		if ((memory >= 1) && (memory <= 100))
 		{
 			memoryFootprints.push_back(memory);
 		}
@@ -55,23 +99,125 @@ int main(int argc, char* argv[])
 	{
 		Process newProcess;
 		newProcess.processId = i;
-		newProcess.cycles = cycles[i];
-		newProcess.memoryFootprint = memoryFootprints[i];
+		newProcess.cycles = static_cast<int>(cycles[i]);
+		newProcess.memoryFootprint = static_cast<int>(memoryFootprints[i]);
 		processQueue.push(newProcess);
-		cyclesMean = cyclesMean + newProcess.cycles;
-		memoryMean = memoryMean + newProcess.memoryFootprint;
 		// write the data to the csv files to easily generate the distrubtion
 		processCsv << newProcess.processId << "," << newProcess.cycles << "," << newProcess.memoryFootprint << std::endl;
 	}
 	processCsv.close();
 
-	cyclesMean = cyclesMean / processCount;
-	memoryMean = memoryMean / processCount;
+	return processQueue;
+}
 
+std::queue<Process> GeneratePoissonDistribution(std::mt19937& randEngine, const int processCount)
+{
+	std::poisson_distribution<> cyclesDistribution(6000);
+	std::poisson_distribution<> memoryDistribution(20);
+	std::queue<Process> processQueue;
+	std::vector<double> cycles;
+	std::vector<double> memoryFootprints;
+	std::ofstream processCsv;
+	processCsv.open("process-poisson-distribution.csv");
 
-	std::cout << "Generated a set of " << processCount << " processes." << std::endl;
-	std::cout << "CPU Cycles Mean: " << cyclesMean << std::endl;
-	std::cout << "Memory Footprint Mean: " << memoryMean << "kb" << std::endl;
+	for (int i = 0; i < processCount * 2; i++)
+	{
+		double cycle = std::round(cyclesDistribution(randEngine));
+		double memory = std::round(memoryDistribution(randEngine));
 
-	return 0;
+		if ((cycle >= 1000) && (cycle <= 11000))
+		{
+			cycles.push_back(cycle);
+		}
+		if ((memory >= 1) && (memory <= 100))
+		{
+			memoryFootprints.push_back(memory);
+		}
+	}
+
+	for (int i = 0; i < processCount * 2; i++)
+	{
+		double cycle = std::round(cyclesDistribution(randEngine));
+		double memory = std::round(memoryDistribution(randEngine));
+
+		if ((cycle >= 1000) && (cycle <= 11000))
+		{
+			cycles.push_back(cycle);
+		}
+		if ((memory >= 1) && (memory <= 100))
+		{
+			memoryFootprints.push_back(memory);
+		}
+	}
+
+	for (int i = 0; i < processCount; i++)
+	{
+		Process newProcess;
+		newProcess.processId = i;
+		newProcess.cycles = static_cast<int>(cycles[i]);
+		newProcess.memoryFootprint = static_cast<int>(memoryFootprints[i]);
+		processQueue.push(newProcess);
+		// write the data to the csv files to easily generate the distrubtion
+		processCsv << newProcess.processId << "," << newProcess.cycles << "," << newProcess.memoryFootprint << std::endl;
+	}
+	processCsv.close();
+
+	return processQueue;
+}
+
+std::queue<Process> GenerateExponentialDistribution(std::mt19937& randEngine, const int processCount)
+{
+	const double cycleLambda = 1 / 6000;
+	const double memoryLambda = 1 / 20;
+	std::exponential_distribution<> cyclesDistribution(cycleLambda);
+	std::exponential_distribution<> memoryDistribution(memoryLambda);
+	std::queue<Process> processQueue;
+	std::vector<double> cycles;
+	std::vector<double> memoryFootprints;
+	std::ofstream processCsv;
+	processCsv.open("process-exponential-distribution.csv");
+
+	for (int i = 0; i < processCount * 2; i++)
+	{
+		double cycle = std::round(cyclesDistribution(randEngine));
+		double memory = std::round(memoryDistribution(randEngine));
+
+		if ((cycle >= 1000) && (cycle <= 11000))
+		{
+			cycles.push_back(cycle);
+		}
+		if ((memory >= 1) && (memory <= 100))
+		{
+			memoryFootprints.push_back(memory);
+		}
+	}
+
+	for (int i = 0; i < processCount * 2; i++)
+	{
+		double cycle = std::round(cyclesDistribution(randEngine));
+		double memory = std::round(memoryDistribution(randEngine));
+
+		if ((cycle >= 1000) && (cycle <= 11000))
+		{
+			cycles.push_back(cycle);
+		}
+		if ((memory >= 1) && (memory <= 100))
+		{
+			memoryFootprints.push_back(memory);
+		}
+	}
+
+	for (int i = 0; i < processCount; i++)
+	{
+		Process newProcess;
+		newProcess.processId = i;
+		newProcess.cycles = static_cast<int>(cycles[i]);
+		newProcess.memoryFootprint = static_cast<int>(memoryFootprints[i]);
+		processQueue.push(newProcess);
+		// write the data to the csv files to easily generate the distrubtion
+		processCsv << newProcess.processId << "," << newProcess.cycles << "," << newProcess.memoryFootprint << std::endl;
+	}
+	processCsv.close();
+
+	return processQueue;
 }
