@@ -14,12 +14,13 @@ class ProcessSimulator
 public:	
 	ProcessSimulator();	
 	/// <summary>
-	/// Initializes a new instance of the <see cref="ProcessSimulator"/> class.
+	/// Initializes a new instance of the <see cref="ProcessSimulator" /> class.
 	/// </summary>
 	/// <param name="algorithim">The algorithim.</param>
 	/// <param name="contextSwitch">The context switch.</param>
 	/// <param name="processSet">The process set.</param>
-	ProcessSimulator(SchedulingAlgorithim algorithim, unsigned int contextSwitch, const ProcessSet& processSet);
+	/// <param name="multiProcessMode">if set to <c>true</c> [multi process mode].</param>
+	ProcessSimulator(SchedulingAlgorithim algorithim, unsigned int contextSwitch, const ProcessSet& processSet, bool multiProcessMode = false);
 	
 	/// <summary>
 	/// Runs the simulation.
@@ -37,15 +38,17 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	int GetTotalPenalty() const;
-    
+	
 
 private:
 	// Driver Methods for the individual simulation types
 	void RunFifoSimulation();
-    
-    void RunRRSimulation();
-    
-    void RunSJFSimulation();
+		
+	void RunFifoQuadCoreSimulation();
+
+	void RunRRSimulation();
+	
+	void RunSJFSimulation();
 	
 
 	/// <summary>
@@ -62,6 +65,7 @@ private:
 	unsigned int totalPenalty;
 	ProcessSet scheduledProcesses;
 	unsigned int numberProcesses;
+	bool multiProcessMode;
 
 };
 
