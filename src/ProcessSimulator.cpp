@@ -287,31 +287,53 @@ void ProcessSimulator::RunRRSimulation()
 	   // Quantum time of 50 cycles, should be fixed
 	   const int quantumTime = 50;
 	   int time = 0;
-	   int isProcessDone = 0;
+	   int isProcessDone = 0; // should be a bool...
 	   
-	   int remainProcess = scheduledProcesses.GetNumberProcesses();
-	   int totalNumberOfProcess = remainProcess;
+	   // set remaining procs to number of procs currently in queue
+       int remainProcess = scheduledProcesses.GetNumberProcesses();
+	   // total becomes remaining
+       int totalNumberOfProcess = remainProcess; 
 	   
+       // create a new process array object called processSet
+       // populate with the total number of procs
 	   Process *processSet = new Process[totalNumberOfProcess];
-	   int remainingTime[totalNumberOfProcess];
+	   // Populate remaining time, finish or "complete" processes, and waiting processes 
+       // with total # of procs
+       int remainingTime[totalNumberOfProcess];
 	   int finish[totalNumberOfProcess];
 	   int wait[totalNumberOfProcess];
-	   int count = 0;
+	   
+       // init counter var and cycle time to 0. Assuming that totCycletime is
+       // going to be used in updating the CSP when this algo runs every iteration
+       int count = 0;
 	   int totalCycleTime = 0;
 	
 	   // Pass the processes in queue into an array. This makes the whole thing easier.
+       // Check while there's still scheduled procs in the queue...
 	   while(scheduledProcesses.GetNumberProcesses() > 0)
 	   {
+           // create new process object and feed it the first scheduled proc 
 	       Process newProcess = scheduledProcesses.FirstProcess();
+          
+           // update process set with counter for index, and set = to above object
 	       processSet[count] = newProcess;
+          
+           // increment totalCycletime by # cycles of the newProcess object
 	       totalCycleTime += newProcess.numberCycles;
-	
+	      
+           // rem. time array gets updated with counter for index, set
+           // equal to the # of cycles 
 	       remainingTime[count] = newProcess.numberCycles;
 	       
-	       
+	       // finish is a array keeping track of complete procs. We populate with count and set
+           // == to zero 
 	       finish[count] = 0;
-	       count++;
-	       scheduledProcesses.PopProcess();
+	       
+           //update count 
+           count++;
+	       
+           // decrement process from sched queue
+           scheduledProcesses.PopProcess();
 	   }
 	   
 	//    for(int i = 0; remainProcess != 0;)
@@ -350,7 +372,8 @@ void ProcessSimulator::RunRRSimulation()
 	//        }
 	//    }
 	
-	   int dec = 0;
+	   int processingTime = 0;
+       
 	   for(time = 0; time < totalCycleTime;)
 	   {
 	       for(int i = 0; i < totalNumberOfProcess;i++)
@@ -359,24 +382,27 @@ void ProcessSimulator::RunRRSimulation()
 	           {
 	               if(remainingTime[i] < quantumTime)
 	               {
-	                   dec = remainingTime[i];
+	                   processingTime = remainingTime[i];
 	               }
 	               else
 	               {
-	                   dec = quantumTime;
+	                   processingTime = quantumTime;
 	               }
 	               
-	               remainingTime[i] = remainingTime[i] - dec;
-	               if(remainingTime[i] == 0) {
+	               remainingTime[i] = remainingTime[i] - processingTime;
+	               
+                   if(remainingTime[i] == 0) 
+                   {
 	                   finish[i] = 1;
 	               }
-	               for (int j = 0; j < totalNumberOfProcess; j++) {
+	               for (int j = 0; j < totalNumberOfProcess; j++) 
+                   {
 	                   if(j!=i && finish[j] == 0 && processSet[j].arrivalTime <= time)
 	                   {
-	                       waitingTime += dec;
+	                       waitingTime += processingTime;
 	                   }
 	               }
-	               time = time + dec;
+	               time = time + processingTime;
 	           }
 	       }
 	   }
