@@ -42,7 +42,7 @@ void ProcessSimulator::RunSimulation()
 	case SJF:
         RunSJFSimulation();
         break;
-	case LRT: break;
+	
 	default: break;
 	}
 }
@@ -220,13 +220,17 @@ void ProcessSimulator::RunRRSimulation()
     int time = 0;
     int isProcessDone = 0;
     
+    // Get remaining processes and set it equal to total number of processes
     int remainProcess = scheduledProcesses.GetNumberProcesses();
     int totalNumberOfProcess = remainProcess;
     
     Process *processSet = new Process[totalNumberOfProcess];
+    
+    // Populate these arrays with the remaining processes
     int remainingTime[totalNumberOfProcess];
     int finish[totalNumberOfProcess];
     int wait[totalNumberOfProcess];
+    
     int count = 0;
     int totalCycleTime = 0;
 
@@ -282,36 +286,59 @@ void ProcessSimulator::RunRRSimulation()
 //    }
 
     int dec = 0;
+    
     for(time = 0; time < totalCycleTime;)
     {
         for(int i = 0; i < totalNumberOfProcess;i++)
         {
+						// Check if the current process' arrival time is less than 
+						// time and if it is not finished
             if(processSet[i].arrivalTime <= time && finish[i] == 0)
             {
+							  // If remaining burst time is less than the quantum(50)
                 if(remainingTime[i] < quantumTime)
-                {
+                {   // dec becomes current remainng time burst 
                     dec = remainingTime[i];
                 }
-                else
+                else // otherwise...
                 {
+										// dec becomes 50
                     dec = quantumTime;
                 }
                 
+                // Update remaining time by subtracting work of the dec
                 remainingTime[i] = remainingTime[i] - dec;
+
+								// If we are done
                 if(remainingTime[i] == 0) {
+                    // Set our finish variable to 1 (could be a bool...)
                     finish[i] = 1;
                 }
-                for (int j = 0; j < totalNumberOfProcess; j++) {
+                
+                // Now loop through all processes
+                for (int j = 0; j < totalNumberOfProcess; j++) 
+                {
+										// If j is = totalNumberOfProcess - 1 and we are not done
+										// and arrival time of the set of processes is less 
+										// than current time
                     if(j!=i && finish[j] == 0 && processSet[j].arrivalTime <= time)
                     {
+												// waitingtime is incremented by dec
                         waitingTime += dec;
                     }
                 }
+                // current time is incremented by dec
                 time = time + dec;
+              
             }
         }
-    }
     
+    	// Update context switch penalty
+		totalPenalty += contextPenalty;
+		scheduledProcesses.PopProcess(); 
+    
+    }
+ 
 }
 
 
@@ -324,7 +351,7 @@ void ProcessSimulator::RunRRSimulation()
 
 
 /// struct Processor
-/// Simulating a 4-core processor by using a vector of processes
+/// Simulating a multi-core processor by using a vector of processes
 
 struct Processor
 {
@@ -333,7 +360,7 @@ struct Processor
 	int AvailableMemory;
 };
 
-/// Create a list of processors  
+/// Create a list of processors...a vector of vectors basically.  
 std::vector<Processor> processorList;
 
 /// Create 4 processors with 4GB of memory each 
