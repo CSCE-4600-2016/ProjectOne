@@ -284,103 +284,103 @@ void ProcessSimulator::RunSJFSimulation()
 // Round Robin
 void ProcessSimulator::RunRRSimulation()
 {
-	//    // Quantum time of 50 cycles
-	//    int quantumTime = 50;
-	//    int time = 0;
-	//    int isProcessDone = 0;
-	//    
-	//    int remainProcess = scheduledProcesses.GetNumberProcesses();
-	//    int totalNumberOfProcess = remainProcess;
-	//    
-	//    Process *processSet = new Process[totalNumberOfProcess];
-	//    int remainingTime[totalNumberOfProcess];
-	//    int finish[totalNumberOfProcess];
-	//    int wait[totalNumberOfProcess];
-	//    int count = 0;
-	//    int totalCycleTime = 0;
-	//
-	//    // Pass the processes in queue into an array. This makes the whole thing easier.
-	//    while(scheduledProcesses.GetNumberProcesses() > 0)
+	   // Quantum time of 50 cycles, should be fixed
+	   const int quantumTime = 50;
+	   int time = 0;
+	   int isProcessDone = 0;
+	   
+	   int remainProcess = scheduledProcesses.GetNumberProcesses();
+	   int totalNumberOfProcess = remainProcess;
+	   
+	   Process *processSet = new Process[totalNumberOfProcess];
+	   int remainingTime[totalNumberOfProcess];
+	   int finish[totalNumberOfProcess];
+	   int wait[totalNumberOfProcess];
+	   int count = 0;
+	   int totalCycleTime = 0;
+	
+	   // Pass the processes in queue into an array. This makes the whole thing easier.
+	   while(scheduledProcesses.GetNumberProcesses() > 0)
+	   {
+	       Process newProcess = scheduledProcesses.FirstProcess();
+	       processSet[count] = newProcess;
+	       totalCycleTime += newProcess.numberCycles;
+	
+	       remainingTime[count] = newProcess.numberCycles;
+	       
+	       
+	       finish[count] = 0;
+	       count++;
+	       scheduledProcesses.PopProcess();
+	   }
+	   
+	//    for(int i = 0; remainProcess != 0;)
 	//    {
-	//        Process newProcess = scheduledProcesses.FirstProcess();
-	//        processSet[count] = newProcess;
-	//        totalCycleTime += newProcess.numberCycles;
-	//
-	//        remainingTime[count] = newProcess.numberCycles;
-	//        
-	//        
-	//        finish[count] = 0;
-	//        count++;
-	//        scheduledProcesses.PopProcess();
-	//    }
-	//    
-	////    for(int i = 0; remainProcess != 0;)
-	////    {
-	////        if(remainingTime[i] <= quantumTime && remainingTime[i] > 0)
-	////        {
-	////            time += remainingTime[i];
-	////            remainingTime[i] = 0;
-	////            isProcessDone = 1;
-	////        }
-	////        else if(remainingTime[i] > 0)
-	////        {
-	////            remainingTime[i] -= quantumTime;
-	////            time += quantumTime;
-	////        }
-	////        
-	////        // If current process is done
-	////        if(remainingTime[i] == 0 && isProcessDone == 1) {
-	////            remainProcess--;
-	////            std::cout << time - processSet[i].arrivalTime - processSet[i].numberCycles << std::endl;
-	////            waitingTime += (time - processSet[i].arrivalTime - processSet[i].numberCycles);
-	////            isProcessDone = 0;
-	////        }
-	////        
-	////        if(i == (totalNumberOfProcess - 1))
-	////        {
-	////            i = 0;
-	////        }
-	////        else if (processSet[i+1].arrivalTime <= time)
-	////        {
-	////            i++;
-	////        }
-	////        else
-	////        {
-	////            i = 0;
-	////        }
-	////    }
-	//
-	//    int dec = 0;
-	//    for(time = 0; time < totalCycleTime;)
-	//    {
-	//        for(int i = 0; i < totalNumberOfProcess;i++)
+	//        if(remainingTime[i] <= quantumTime && remainingTime[i] > 0)
 	//        {
-	//            if(processSet[i].arrivalTime <= time && finish[i] == 0)
-	//            {
-	//                if(remainingTime[i] < quantumTime)
-	//                {
-	//                    dec = remainingTime[i];
-	//                }
-	//                else
-	//                {
-	//                    dec = quantumTime;
-	//                }
-	//                
-	//                remainingTime[i] = remainingTime[i] - dec;
-	//                if(remainingTime[i] == 0) {
-	//                    finish[i] = 1;
-	//                }
-	//                for (int j = 0; j < totalNumberOfProcess; j++) {
-	//                    if(j!=i && finish[j] == 0 && processSet[j].arrivalTime <= time)
-	//                    {
-	//                        waitingTime += dec;
-	//                    }
-	//                }
-	//                time = time + dec;
-	//            }
+	//            time += remainingTime[i];
+	//            remainingTime[i] = 0;
+	//            isProcessDone = 1;
+	//        }
+	//        else if(remainingTime[i] > 0)
+	//        {
+	//            remainingTime[i] -= quantumTime;
+	//            time += quantumTime;
+	//        }
+	//        
+	//        // If current process is done
+	//        if(remainingTime[i] == 0 && isProcessDone == 1) {
+	//            remainProcess--;
+	//            std::cout << time - processSet[i].arrivalTime - processSet[i].numberCycles << std::endl;
+	//            waitingTime += (time - processSet[i].arrivalTime - processSet[i].numberCycles);
+	//            isProcessDone = 0;
+	//        }
+	//        
+	//        if(i == (totalNumberOfProcess - 1))
+	//        {
+	//            i = 0;
+	//        }
+	//        else if (processSet[i+1].arrivalTime <= time)
+	//        {
+	//            i++;
+	//        }
+	//        else
+	//        {
+	//            i = 0;
 	//        }
 	//    }
-	//    
+	
+	   int dec = 0;
+	   for(time = 0; time < totalCycleTime;)
+	   {
+	       for(int i = 0; i < totalNumberOfProcess;i++)
+	       {
+	           if(processSet[i].arrivalTime <= time && finish[i] == 0)
+	           {
+	               if(remainingTime[i] < quantumTime)
+	               {
+	                   dec = remainingTime[i];
+	               }
+	               else
+	               {
+	                   dec = quantumTime;
+	               }
+	               
+	               remainingTime[i] = remainingTime[i] - dec;
+	               if(remainingTime[i] == 0) {
+	                   finish[i] = 1;
+	               }
+	               for (int j = 0; j < totalNumberOfProcess; j++) {
+	                   if(j!=i && finish[j] == 0 && processSet[j].arrivalTime <= time)
+	                   {
+	                       waitingTime += dec;
+	                   }
+	               }
+	               time = time + dec;
+	           }
+	       }
+	   }
+	   
 }
 
 
