@@ -49,6 +49,8 @@ private:
 	void RunRRSimulation();
 	
 	void RunSJFSimulation();
+    
+    void RunSJFQuadCoreSimulation();
 	
 
 	/// <summary>
