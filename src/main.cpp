@@ -24,15 +24,15 @@ int main(int argc, char** argv)
 	std::cout << "Fifo Single Core: Total Penalty For Context Switching: " << simulator.GetTotalPenalty() << std::endl;
 	
 //    // RR
-//    process_set.BuildProcessSet(std::cin);
+    process_set.BuildProcessSet(std::cin);
 //    // build a simulator for a fifo scheduler, with a context switch penalty of 10
-//    ProcessSimulator simulatorRR(SchedulingAlgorithim::RoundRobin, 10, process_set);
+    ProcessSimulator simulatorRR(SchedulingAlgorithim::RoundRobin, 10, process_set);
 //    
-//    std::cout << "Total Processes: " << process_set.GetNumberProcesses() << std::endl;
-//    simulatorRR.RunSimulation();
+    std::cout << "\nRound Robin: Total Processes: " << process_set.GetNumberProcesses() << std::endl;
+    simulatorRR.RunSimulation();
 //    
-//    std::cout << "Average Wait Time: " << simulatorRR.GetAverageWaitTime() << std::endl;
-//    std::cout << "Total Penalty For Context Switching: " << simulatorRR.GetTotalPenalty() << std::endl;
+    std::cout << "Round Robin: Average Wait Time: " << simulatorRR.GetAverageWaitTime() << std::endl;
+    std::cout << "Round Robin: Total Penalty For Context Switching: " << simulatorRR.GetTotalPenalty() << std::endl;
 	
 	process_set.BuildProcessSet(std::cin);
 	// build a simulator for a sjf scheduler, with a context switch penalty of 10

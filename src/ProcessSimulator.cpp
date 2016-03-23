@@ -332,49 +332,57 @@ void ProcessSimulator::RunRRSimulation()
            //update count 
            count++;
 	       
+           // update contextSwitchPenalty
+           totalPenalty += contextPenalty;
+        
+
            // decrement process from sched queue
            scheduledProcesses.PopProcess();
 	   }
 
-	//-----------------------------------------------------------
-	   for(int i = 0; remainProcess != 0;)
-	   {
-            // check if the rem time for the current proc is < quantum
-	       if((remainingTime[i] <= quantumTime) && (remainingTime[i] > 0))
-	       {
+// 	//-----------------------------------------------------------
+// 	   for(int i = 0; remainProcess != 0;)
+// 	   {
+//             // check if the rem time for the current proc is < quantum
+// 	       if((remainingTime[i] <= quantumTime) && (remainingTime[i] > 0))
+// 	       {
 
-	           time += remainingTime[i];
-	           remainingTime[i] = 0;
-	           isProcessDone = 1;
-	       }
-	       else if(remainingTime[i] > 0)
-	       {
-	           remainingTime[i] -= quantumTime;
-	           time += quantumTime;
-	       }
+// 	           time += remainingTime[i];
+// 	           remainingTime[i] = 0;
+// 	           isProcessDone = 1;
+// 	       }
+// 	       else if(remainingTime[i] > 0)
+// 	       {
+// 	           remainingTime[i] -= quantumTime;
+// 	           time += quantumTime;
+// 	       }
 	       
-	       // If current process is done
-	       if(remainingTime[i] == 0 && isProcessDone == 1) {
-	           remainProcess--;
-	           std::cout << time - processSet[i].arrivalTime - processSet[i].numberCycles << std::endl;
-	           waitingTime += (time - processSet[i].arrivalTime - processSet[i].numberCycles);
-	           isProcessDone = 0;
-	       }
+// 	       // If rem time for the current process is zero, 
+//            // and process is done
+// 	       if((remainingTime[i] == 0) && (isProcessDone == 1)) 
+//            {
+// 	           remainProcess--;
+// 	        //   std::cout << time - processSet[i].arrivalTime - processSet[i].numberCycles << std::endl;
+// 	           waitingTime += (time - processSet[i].arrivalTime - processSet[i].numberCycles);
+// 	           isProcessDone = 0;
+// 	       }
 	       
-	       if(i == (totalNumberOfProcess - 1))
-	       {
-	           i = 0;
-	       }
-	       else if (processSet[i+1].arrivalTime <= time)
-	       {
-	           i++;
-	       }
-	       else
-	       {
-	           i = 0;
-	       }
-	   }
-//---------------------------------------------------
+// 	       if(i == (totalNumberOfProcess - 1))
+// 	       {
+// 	           i = 0;
+// 	       }
+	   
+//            else if (processSet[i+1].arrivalTime <= time)
+// 	       {
+// 	           i++;
+// 	       }
+	   
+//            else
+// 	       {
+// 	           i = 0;
+// 	       }
+// 	   }
+// //---------------------------------------------------
 	   // we set our proc time to 0
 	   int processingTime = 0;
 
@@ -384,7 +392,7 @@ void ProcessSimulator::RunRRSimulation()
 	       for(int i = 0; i < totalNumberOfProcess;i++) 
 	       {
                // 
-	           if((processSet[i].arrivalTime <= time) && finish[i] == 0)
+	           if((processSet[i].arrivalTime <= time) && (finish[i] == 0))
 	           {
 	               if(remainingTime[i] < quantumTime)
 	               {
@@ -399,12 +407,16 @@ void ProcessSimulator::RunRRSimulation()
 	               
                    if(remainingTime[i] == 0) 
                    {
-	                   finish[i] = 1;
+	                   finish[i] = time; // (c) http://stackoverflow.com/questions/14912813/round-robin-scheduling-program
 	               }
 	               for (int j = 0; j < totalNumberOfProcess; j++) 
                    {
-	                   if(j!=i && finish[j] == 0 && processSet[j].arrivalTime <= time)
+                       // check for our inner counter != outer counter
+                       // and if unfinished and if the arrival time is
+                       // less than or equal to the current time 
+	                   if(j != i && finish[j] == 0 && processSet[j].arrivalTime <= time)
 	                   {
+                           // Update the waiting time  
 	                       waitingTime += processingTime;
 	                   }
 	               }
