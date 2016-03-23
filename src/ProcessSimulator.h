@@ -38,6 +38,9 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	int GetTotalPenalty() const;
+
+
+	void WriteReportFile() const;
 	
 
 private:
@@ -49,8 +52,8 @@ private:
 	void RunRRSimulation();
 	
 	void RunSJFSimulation();
-    
-    void RunSJFQuadCoreSimulation();
+	
+	void RunSJFQuadCoreSimulation();
 	
 
 	/// <summary>

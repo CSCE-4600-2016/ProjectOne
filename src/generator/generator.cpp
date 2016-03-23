@@ -15,7 +15,7 @@ struct Process
 
 std::queue<Process> GenerateNormalDistribution(std::mt19937& randEngine, const int processCount);
 std::queue<Process> GeneratePoissonDistribution(std::mt19937& randEngine, const int processCount);
-std::queue<Process> GenerateExponentialDistribution(std::mt19937& randEngine, const int processCount);
+std::queue<Process> GenerateUniformDistribution(std::mt19937& randEngine, const int processCount);
 
 int main(int argc, char* argv[])
 {
@@ -37,9 +37,9 @@ int main(int argc, char* argv[])
 	{
 		processQueue = GenerateNormalDistribution(gen_engine, processCount);
 	}
-	else if(distributionType == "exponential")
+	else if(distributionType == "uniform")
 	{
-		processQueue = GenerateExponentialDistribution(gen_engine, processCount);
+		processQueue = GenerateUniformDistribution(gen_engine, processCount);
 	}
 	else if(distributionType == "poisson")
 	{
@@ -165,22 +165,22 @@ std::queue<Process> GeneratePoissonDistribution(std::mt19937& randEngine, const 
 	return processQueue;
 }
 
-std::queue<Process> GenerateExponentialDistribution(std::mt19937& randEngine, const int processCount)
+std::queue<Process> GenerateUniformDistribution(std::mt19937& randEngine, const int processCount)
 {
 	const double cycleLambda = 1 / 6000;
 	const double memoryLambda = 1 / 20;
-	std::exponential_distribution<> cyclesDistribution(cycleLambda);
-	std::exponential_distribution<> memoryDistribution(memoryLambda);
+	std::uniform_int_distribution<> cyclesDistribution(1000, 11000);
+	std::uniform_int_distribution<> memoryDistribution(1, 100);
 	std::queue<Process> processQueue;
 	std::vector<double> cycles;
 	std::vector<double> memoryFootprints;
 	std::ofstream processCsv;
-	processCsv.open("process-exponential-distribution.csv");
+	processCsv.open("process-uniform-distribution.csv");
 
-	for (int i = 0; i < processCount * 2; i++)
+	for (int i = 0; i < processCount ; i++)
 	{
-		double cycle = std::round(cyclesDistribution(randEngine));
-		double memory = std::round(memoryDistribution(randEngine));
+		int cycle = std::round(cyclesDistribution(randEngine));
+		int memory = std::round(memoryDistribution(randEngine));
 
 		if ((cycle >= 1000) && (cycle <= 11000))
 		{
@@ -192,10 +192,10 @@ std::queue<Process> GenerateExponentialDistribution(std::mt19937& randEngine, co
 		}
 	}
 
-	for (int i = 0; i < processCount * 2; i++)
+	for (int i = 0; i < processCount; i++)
 	{
-		double cycle = std::round(cyclesDistribution(randEngine));
-		double memory = std::round(memoryDistribution(randEngine));
+		int cycle = std::round(cyclesDistribution(randEngine));
+		int memory = std::round(memoryDistribution(randEngine));
 
 		if ((cycle >= 1000) && (cycle <= 11000))
 		{
