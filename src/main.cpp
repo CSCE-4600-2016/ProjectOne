@@ -48,6 +48,7 @@ int main(int argc, char** argv)
 
 	std::cout << "\nRound Robin: Total Processes: " << process_set.GetNumberProcesses() << std::endl;
 	simulatorRR.RunSimulation();
+	simulatorRR.WriteReportFile();
 //    
 	std::cout << "Round Robin: Average Wait Time: " << simulatorRR.GetAverageWaitTime() << std::endl;
 	std::cout << "Round Robin: Total Penalty For Context Switching: " << simulatorRR.GetTotalPenalty() << std::endl;
