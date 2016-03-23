@@ -388,23 +388,32 @@ void ProcessSimulator::RunRRSimulation()
 
 	   for(time = 0; time < totalCycleTime;) // traverse from 0 to totCycleTime
 	   {
-           // as long as we are less than all procs 
+           // as long counter is less than all procs 
 	       for(int i = 0; i < totalNumberOfProcess;i++) 
 	       {
-               // 
+               // if arrival time of curr proc is less than time
+               // and finish queue is empty
 	           if((processSet[i].arrivalTime <= time) && (finish[i] == 0))
 	           {
+                  //If remaining time of curr proc is less than q
 	               if(remainingTime[i] < quantumTime)
 	               {
+                       // set the proc time to the remaining time
+                       // of the current process
 	                   processingTime = remainingTime[i];
 	               }
 	               else
 	               {
+                       // otherwise processing time is now our quantum
 	                   processingTime = quantumTime;
 	               }
 	               
+
+
 	               remainingTime[i] = remainingTime[i] - processingTime;
 	               
+                   // Now we check if remaining time at the current
+                   // index is zero 
                    if(remainingTime[i] == 0) 
                    {
 	                   finish[i] = time; // (c) http://stackoverflow.com/questions/14912813/round-robin-scheduling-program
@@ -416,10 +425,14 @@ void ProcessSimulator::RunRRSimulation()
                        // less than or equal to the current time 
 	                   if(j != i && finish[j] == 0 && processSet[j].arrivalTime <= time)
 	                   {
-                           // Update the waiting time  
+                           // Update the waiting time 
+                           // increment it by processing time 
 	                       waitingTime += processingTime;
 	                   }
 	               }
+
+                   // increment time by itself + processingTime
+                   // time+=processingTime
 	               time = time + processingTime;
 	           }
 	       }
