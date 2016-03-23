@@ -1,4 +1,6 @@
 #include "ProcessSimulator.h"
+#include <fstream>
+#include <iostream>
 #include <vector>
 #include <algorithm> //std::sort
 
@@ -41,7 +43,7 @@ void ProcessSimulator::RunSimulation()
 		multiProcessMode ? RunFifoQuadCoreSimulation() : RunFifoSimulation();
 		break;
 	case SJF:
-        multiProcessMode? RunSJFQuadCoreSimulation() : RunSJFSimulation();
+		multiProcessMode ? RunSJFQuadCoreSimulation() : RunSJFSimulation();
 		break;
 
 	default: break;
@@ -64,6 +66,39 @@ float ProcessSimulator::GetAverageWaitTime() const
 int ProcessSimulator::GetTotalPenalty() const
 {
 	return totalPenalty;
+}
+
+void ProcessSimulator::WriteReportFile() const
+{
+	std::ofstream reportFile;
+
+	switch(this->currentAlgorithim)
+	{
+	case RoundRobin: 
+		multiProcessMode ? reportFile.open("round-robin-quad-core.csv") : reportFile.open("round-robin-single-core.csv");
+		break;
+	case FIFO:
+		multiProcessMode ? reportFile.open("fifo-quad-core.csv") : reportFile.open("fifo-single-core.csv");
+		break;
+	case SJF:
+		multiProcessMode ? reportFile.open("sjf-quad-core.csv") : reportFile.open("sjf-single-core.csv");
+		break;
+	default: break;
+	}
+
+	// if for some reason we could not open the file just report. Don't attempt to write it
+	if (!reportFile.is_open())
+		return;
+
+	// Column Header information
+	reportFile << "Process Id, Wait Time\n";
+
+	// write the csv report file. 
+	// first is the process id, and second is the process wait time
+	for(auto process : processWaitingTimes)
+	{
+		reportFile << process.first << ", " << process.second << std::endl;
+	}
 }
 
 void ProcessSimulator::RunFifoSimulation()
@@ -94,6 +129,7 @@ void ProcessSimulator::RunFifoSimulation()
 			if (totalCycleNumber > currentProcess.arrivalTime) {
 				waitingTime += (totalCycleNumber - currentProcess.arrivalTime);
 				totalCycleNumber += currentProcess.numberCycles;
+				processWaitingTimes.insert(std::make_pair(currentProcess.processId, waitingTime));
 			}
 			else {
 				totalCycleNumber = (currentProcess.arrivalTime + currentProcess.numberCycles);
@@ -104,6 +140,8 @@ void ProcessSimulator::RunFifoSimulation()
 		else {
 			totalCycleNumber = currentProcess.numberCycles;
 			iProcess++;
+			// first process didn't have any wait time
+			processWaitingTimes.insert(std::make_pair(currentProcess.processId, 0));
 		}
 
 		totalPenalty += contextPenalty;
@@ -124,8 +162,12 @@ void ProcessSimulator::RunFifoQuadCoreSimulation()
 	std::vector<Process> runningProcesses;
 
 	// start with one running process
+	// first process has no waiting time
+	processWaitingTimes.insert(std::make_pair(scheduledProcesses.FirstProcess().processId, 0));
 	runningProcesses.push_back(scheduledProcesses.FirstProcess());
 	scheduledProcesses.PopProcess();
+
+	
 
 	// for a multiprocess system we are going to treat each time around the loop as one cycle. This way each we always know when to add or remove a process
 	while (scheduledProcesses.GetNumberProcesses() > 0)
@@ -140,6 +182,7 @@ void ProcessSimulator::RunFifoQuadCoreSimulation()
 			runningProcesses.push_back(waitingProcess);
 			// we need to calculate the waiting time that this process had to wait for an open processor
 			waitingTime += (totalCycles - waitingProcess.arrivalTime);
+			processWaitingTimes.insert(std::make_pair(waitingProcess.processId, waitingTime));
 
 			// we now should have one less process scheduled
 			scheduledProcesses.PopProcess();
@@ -222,6 +265,7 @@ void ProcessSimulator::RunSJFSimulation()
 					if (ProcessSet.at(i).numberCycles >= 50)
 					{
 						perviousCycle = ProcessSet.at(i).numberCycles;
+						processWaitingTimes.insert(std::make_pair(ProcessSet.at(i).processId, 0));
 					}
 					else
 					{
@@ -251,6 +295,7 @@ void ProcessSimulator::RunSJFSimulation()
 				if (ProcessSet.at(i).arrivalTime <= perviousCycle)
 				{
 					waitingTime += perviousCycle - ProcessSet.at(i).arrivalTime;
+					processWaitingTimes.insert(std::make_pair(ProcessSet.at(i).processId, waitingTime));
 
 					//cout << "waiting time = " << waitingTime << endl;
 					perviousCycle = perviousCycle + ProcessSet.at(i).numberCycles;
@@ -281,77 +326,79 @@ void ProcessSimulator::RunSJFSimulation()
 
 void ProcessSimulator::RunSJFQuadCoreSimulation()
 {
-    vector<Process> processSet;
-    
-    // Pass the processes in queue into an array. This makes the whole thing easier.
-    while (scheduledProcesses.GetNumberProcesses() > 0)
-    {
-        Process newProcess = scheduledProcesses.FirstProcess();
-        processSet.push_back(newProcess);
-        scheduledProcesses.PopProcess();
-    }
-    
-    // Sort the vector so we always get SJ Process
-    sort(processSet.begin(), processSet.end());
-    
-    // how many processors we currently have left to run a process
-    unsigned int processorsLeft = 4;
-    unsigned int totalCycles = 0;
-    
-    // all the processes that are running right now
-    std::vector<Process> runningProcesses;
-    
-    // start with one running process
-    runningProcesses.push_back(processSet.at(0));
-    processSet.erase(processSet.begin() + 0);
-    
-    
-    // for a multiprocess system we are going to treat each time around the loop as one cycle. This way each we always know when to add or remove a process
-    while (processSet.size() > 0)
-    {
-        // the process that is scheduled next to run
-        Process waitingProcess = processSet.at(0);
-        // if we have an open processor AND we have a process waiting then we give this process to some processor
-        if (processorsLeft > 0 && totalCycles >= waitingProcess.arrivalTime)
-        {
-            // asign this process to some processor so it can do some work
-            processorsLeft--;
-            runningProcesses.push_back(waitingProcess);
-            // we need to calculate the waiting time that this process had to wait for an open processor
-            waitingTime += (totalCycles - waitingProcess.arrivalTime);
-            
-            // we now should have one less process scheduled
-            processSet.erase(processSet.begin() + 0);
-            
-        }
-        // either we don't have a processor waiting or their isn't a process that has arrived
-        else
-        {
-            // loop through all the processes that are currently running on all the processors
-            for (unsigned int i = 0; i < runningProcesses.size(); i++)
-            {
-                // do we have a process that has finished up?
-                if (runningProcesses[i].numberCycles <= 0)
-                {
-                    // make a processor avaliable
-                    processorsLeft++;
-                    
-                    // context penalty since processor has to do some work to get ready for next process
-                    totalPenalty += contextPenalty;
-                    
-                    // we are finished with this proces remove it from the set
-                    runningProcesses.erase(runningProcesses.begin() + i);
-                }
-                // process is not done yet, just keep subtracting the number cycles it has left
-                else
-                {
-                    runningProcesses[i].numberCycles--;
-                }
-            }
-        }
-        
-        totalCycles++;
-    }
+	vector<Process> processSet;
+	
+	// Pass the processes in queue into an array. This makes the whole thing easier.
+	while (scheduledProcesses.GetNumberProcesses() > 0)
+	{
+		Process newProcess = scheduledProcesses.FirstProcess();
+		processSet.push_back(newProcess);
+		scheduledProcesses.PopProcess();
+	}
+	
+	// Sort the vector so we always get SJ Process
+	sort(processSet.begin(), processSet.end());
+	
+	// how many processors we currently have left to run a process
+	unsigned int processorsLeft = 4;
+	unsigned int totalCycles = 0;
+	
+	// all the processes that are running right now
+	std::vector<Process> runningProcesses;
+	
+	// start with one running process
+	processWaitingTimes.insert(std::make_pair(processSet.front().processId, 0));
+	runningProcesses.push_back(processSet.at(0));
+	processSet.erase(processSet.begin() + 0);
+	
+	
+	// for a multiprocess system we are going to treat each time around the loop as one cycle. This way each we always know when to add or remove a process
+	while (processSet.size() > 0)
+	{
+		// the process that is scheduled next to run
+		Process waitingProcess = processSet.at(0);
+		// if we have an open processor AND we have a process waiting then we give this process to some processor
+		if (processorsLeft > 0 && totalCycles >= waitingProcess.arrivalTime)
+		{
+			// asign this process to some processor so it can do some work
+			processorsLeft--;
+			runningProcesses.push_back(waitingProcess);
+			// we need to calculate the waiting time that this process had to wait for an open processor
+			waitingTime += (totalCycles - waitingProcess.arrivalTime);
+			processWaitingTimes.insert(std::make_pair(waitingProcess.processId, waitingTime));
+
+			// we now should have one less process scheduled
+			processSet.erase(processSet.begin() + 0);
+			
+		}
+		// either we don't have a processor waiting or their isn't a process that has arrived
+		else
+		{
+			// loop through all the processes that are currently running on all the processors
+			for (unsigned int i = 0; i < runningProcesses.size(); i++)
+			{
+				// do we have a process that has finished up?
+				if (runningProcesses[i].numberCycles <= 0)
+				{
+					// make a processor avaliable
+					processorsLeft++;
+					
+					// context penalty since processor has to do some work to get ready for next process
+					totalPenalty += contextPenalty;
+					
+					// we are finished with this proces remove it from the set
+					runningProcesses.erase(runningProcesses.begin() + i);
+				}
+				// process is not done yet, just keep subtracting the number cycles it has left
+				else
+				{
+					runningProcesses[i].numberCycles--;
+				}
+			}
+		}
+		
+		totalCycles++;
+	}
 }
 
 
