@@ -1,4 +1,9 @@
-
+/*
+* Group Members: 
+* Chad Smith
+* Jimmy Yeung
+* Asad Waheed 
+*/
 
 #include <iostream>
 #include <locale>
