@@ -66,8 +66,8 @@ private:
 	unsigned int waitingTime;
 	unsigned int totalRunningTime;
 	SchedulingAlgorithim currentAlgorithim;
-	unsigned int contextPenalty;
-	unsigned int totalPenalty;
+	unsigned long contextPenalty;
+	unsigned long totalPenalty;
 	ProcessSet scheduledProcesses;
 	unsigned int numberProcesses;
 	bool multiProcessMode;
