@@ -550,11 +550,12 @@ void ProcessSimulator::RunRRSimulation()
                            waitingTime += processingTime;
                            processWaitingTimes.insert(std::make_pair(processSet[j].processId, waitingTime));
                            
-                           // update contextSwitchPenalty with the global total penalty
-                           totalPenalty += contextPenalty;
-                       }
+                           
+                           
                    }
                    time = time + processingTime;
+                   totalPenalty += contextPenalty; // update contextSwitchPenalty with the global total penalty
+                       }
                }
            }
        }
