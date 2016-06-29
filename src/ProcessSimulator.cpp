@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm> //std::sort
+#include <numeric>
 
 using namespace std;
 
@@ -549,7 +550,10 @@ void ProcessSimulator::RunRRSimulation()
                            // Update the waiting time
                            waitingTime += processingTime;
                            processWaitingTimes.insert(std::make_pair(processSet[j].processId, waitingTime));
-                           
+
+                           int result = std::accumulate(std::begin(processWaitingTimes), std::end(processWaitingTimes), 0, [](const size_t previous, const std::pair<int,size_t>& p) { return previous+p.second; });
+
+                           waitingTime = result/(remainingTime - quantumTime);
                            
                            
                    }

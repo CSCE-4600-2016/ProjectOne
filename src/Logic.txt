@@ -1,0 +1,66 @@
+Logic:
+
+// RunFIFOQuadCoreSimulation()
+// {
+	// processorsLeft = 4
+	// initialize a vector of Process objects
+	// start with the 1st process, this has no waiting time
+
+	// for a multiprocess system we are going to treat  // each time around the loop as one cycle. This way // each we always know when to add or remove a 
+	// process
+	// while(scheduledProcesses > 0)
+	// {
+		// Select the next process scheduled to run 
+		// If we have a free processor AND a waiting process, then pass the process to the free processor
+			// assign this process to some processor so it can do some work
+			// calculate waiting time for the process that waited for a free processor as: 
+			waitingTime = waitingTime + (totalCycles - arrivalTimeOfProcess)
+			// Now we have one less scheduled process,
+			// so pop it off the Processes vector  
+		// Now we either have no waiting processors or no new process has arrived.
+		// Else
+			// For-loop through all running processes across all processors 
+				// If we have a completed process
+					// Free up a processor
+					// Update context switch penalty since processor needs to do some work to get ready for the next process
+					// Process has completed. Remove (erase) process from the vector of running processes
+				// Else keep subtracting cycles from a running process until it's completed.
+		// Increment total cycles by 1 
+
+	// }
+
+// }
+
+Logic: 
+
+RunSJFQuadSimulation()
+{
+	// Initialize a vector of processes, a process set
+	// Pass all processes in queue to an array
+	// while(number of scheduled processes > 0)
+	// {
+		 // Load the first process off the vector
+	// }
+	// Sort process vector by shortest burst time
+	// processorsLeft = 4
+	// Create vector of running processes
+	// In a multi-core system, each traversal through the while loop below counts as 1 cycle 
+	// while(size of the process vector is > 0)
+	// {
+		 // if we have an open processor AND we have a process waiting then we give this process to some processor 
+		 	// assign this process to some processor so it can do some work
+		 	// calculate waiting time as: 
+		 	// waitingTime = waitingTime + (totalCycles - waitingProcess.arrivalTime);
+		 	// One less scheduled process. So remove it from the vector of scheduled processes
+		 // either we don't have a processor waiting or // there isn't a process that has arrived
+         // Else
+         	// For-loop through all running processes
+         		// Check if a process has completed
+         			// If yes
+         				// Free up a processor
+         				// Update context switch penalty
+         				// We are done with this process, remove it
+         			// Else
+         				// Process isn't done yet	
+	// }
+}
